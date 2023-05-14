@@ -12,7 +12,7 @@ using genericCRUD.Models;
 namespace genericCRUDtest.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230513125015_InitialMigrate")]
+    [Migration("20230514103814_InitialMigrate")]
     partial class InitialMigrate
     {
         /// <inheritdoc />
@@ -33,11 +33,11 @@ namespace genericCRUDtest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("ColorId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("EntryDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<long?>("FigureColorId")
-                        .HasColumnType("bigint");
 
                     b.Property<int>("Length")
                         .HasColumnType("int");
@@ -54,7 +54,7 @@ namespace genericCRUDtest.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FigureColorId");
+                    b.HasIndex("ColorId");
 
                     b.ToTable("Figures");
                 });
@@ -118,7 +118,9 @@ namespace genericCRUDtest.Migrations
                 {
                     b.HasOne("genericCRUDtest.Models.Color", "FigureColor")
                         .WithMany("Figures")
-                        .HasForeignKey("FigureColorId");
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FigureColor");
                 });

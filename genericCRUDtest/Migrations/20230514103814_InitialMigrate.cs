@@ -36,7 +36,7 @@ namespace genericCRUDtest.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Length = table.Column<int>(type: "int", nullable: false),
                     Width = table.Column<int>(type: "int", nullable: false),
-                    FigureColorId = table.Column<long>(type: "bigint", nullable: true),
+                    ColorId = table.Column<long>(type: "bigint", nullable: false),
                     EntryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -44,10 +44,11 @@ namespace genericCRUDtest.Migrations
                 {
                     table.PrimaryKey("PK_Figures", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Figures_Colors_FigureColorId",
-                        column: x => x.FigureColorId,
+                        name: "FK_Figures_Colors_ColorId",
+                        column: x => x.ColorId,
                         principalTable: "Colors",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,9 +74,9 @@ namespace genericCRUDtest.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Figures_FigureColorId",
+                name: "IX_Figures_ColorId",
                 table: "Figures",
-                column: "FigureColorId");
+                column: "ColorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lasers_LaserColorsId",

@@ -9,9 +9,8 @@ namespace genericCRUD.Models
         public int Length { get; set; }
         public int Width { get; set; }
 
-        //[JsonIgnore]
-        public Color? FigureColor { get; set; }
+        public Color FigureColor { get; set; } = new Color();
 
-        //public int ColorId { get; set; }
+        public long ColorId { get; set; }
     }
 }

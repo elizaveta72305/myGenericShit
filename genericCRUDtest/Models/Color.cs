@@ -7,6 +7,7 @@ namespace genericCRUDtest.Models
     {
         public string Name { get; set; } = string.Empty;
         public string RGB { get; set; } = string.Empty;
+
         [JsonIgnore]
         public List<Figure> Figures { get; set; } = new List<Figure>();
     }
