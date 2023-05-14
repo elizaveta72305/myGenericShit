@@ -87,6 +87,7 @@ namespace genericCRUD.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> Create(T entity)
         {
+
             entity.EntryDate = DateTime.Now;
             await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
@@ -124,13 +125,9 @@ namespace genericCRUD.Controllers
             return NoContent();
         }
 
-
         private Task<bool> EntityExist(long id)
         {
             return _context.Set<T>().AnyAsync(e=> e.Id == id);
         }
-
-
-
     }
 }
