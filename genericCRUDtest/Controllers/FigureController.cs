@@ -1,29 +1,66 @@
 ﻿using genericCRUD.Models;
-using genericCRUDtest.Models;
-using Microsoft.AspNetCore.Http;
+using genericCRUDtest.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace genericCRUD.Controllers
+namespace genericCRUDtest.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Figure")]
     [ApiController]
-    public class FigureController : GenericCrudController<Figure>
+    public class FigureController : ControllerBase
     {
-        protected readonly DataContext _context;
-        public FigureController(DataContext context) : base(context)
+        private readonly IRepository<Figure> _repository;
+        private readonly DataContext _dataContext;
+        public FigureController(IRepository<Figure> repository, DataContext dataContext)
         {
-            _context = context;
+            _repository = repository;
+            _dataContext = dataContext;
         }
-        //[HttpGet("GetAllColors")]
-        //public virtual async Task<IActionResult> ListOfColors()
-        //{
-        //    var list = await _context.Figures
-        //        .Include(c=> c.FigureColor)
-        //        .ToListAsync();
-        //    return Ok(list);
-        //}
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(long id)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            var figureCoolr = _dataContext.Figures.FirstOrDefaultAsync(c => c.Id == id);
+            if (entity == null)
+                return NotFound();
+            return Ok(entity);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var entities = await _repository.GetAllAsync();
+            return Ok(entities);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Figure entity)
+        {
+            await _repository.AddAsync(entity);
+            return CreatedAtAction(nameof(GetById), new { id = entity.Id }, entity);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(long id, Figure entity)
+        {
+            if (id != entity.Id)
+                return BadRequest();
+
+            await _repository.UpdateAsync(entity);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+                return NotFound();
+
+            await _repository.DeleteAsync(entity);
+
+            return NoContent();
+        }
     }
-
-
 }
